@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/dangthanhduong01/simplebank/db/utils"
 	"github.com/dangthanhduong01/simplebank/token"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
@@ -21,7 +22,7 @@ func addAuthorization(
 	role string,
 	duration time.Duration,
 ) {
-	token, payload, err := tokenMaker.CreateToken(username, duration)
+	token, payload, err := tokenMaker.CreateToken(username, role, duration)
 	require.NoError(t, err)
 	require.NotEmpty(t, payload)
 
@@ -30,6 +31,9 @@ func addAuthorization(
 }
 
 func TestAuthMiddleware(t *testing.T) {
+	username := utils.RandomOwner()
+	role := utils.DepositorRole
+
 	testCases := []struct {
 		name          string
 		setupAuth     func(t *testing.T, request *http.Request, tokenMaker token.Maker)

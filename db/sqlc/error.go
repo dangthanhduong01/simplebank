@@ -10,6 +10,7 @@ const (
 )
 
 var ErrRecordNotFound = sql.ErrNoRows
+var ErrUniqueViolation = sql.ErrConnDone
 
 // var ErrUniqueViolation = &pgconn.PgError{
 // 	Code: UniqueViolation,

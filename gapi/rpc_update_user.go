@@ -16,7 +16,7 @@ import (
 
 func (server *Server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
 	// TODO: add authorization
-	authPayload, err := server.authorizeUser(ctx)
+	authPayload, err := server.authorizeUser(ctx, []string{utils.BankerRole, utils.DepositorRole})
 	if err != nil {
 		return nil, unauthenticatedError(err)
 	}
@@ -26,7 +26,7 @@ func (server *Server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest)
 		return nil, invalidArgumentError(violations)
 	}
 
-	if authPayload.Username != req.GetUsername() {
+	if authPayload.Username != req.GetUsername() && authPayload.Role != utils.BankerRole {
 		return nil, status.Errorf(codes.PermissionDenied, "cannot update other user's infor")
 	}
 

@@ -38,6 +38,7 @@ sqlc:
 
 mock:
 	../../../go/bin/mockgen -package mockdb -destination db/mock/store.go github.com/dangthanhduong01/simplebank/db/sqlc Store
+	../../../go/bin/mockgen -package mockwk -destination worker/mock/distributor.go github.com/dangthanhduong01/simplebank/worker TaskDistributor
 
 server:
 	go run main.go
@@ -57,5 +58,8 @@ evans:
 
 redis:
 	docker run --name redis -p 6379:6379 -d redis:7-alpine
+
+test:
+	go test -v -cover -short ./...
 
 .PHONY: network postgres createdb dropdb migrateup migratedown migrateup1 migratedown1 new_migration sqlc server mock proto evans redis

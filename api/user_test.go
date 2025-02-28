@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -207,4 +208,18 @@ func randomUser(t *testing.T) (user db.User, password string) {
 		Email:          utils.RandomEmail(),
 	}
 	return
+}
+
+func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.User) {
+	data, err := io.ReadAll(body)
+	require.NoError(t, err)
+
+	var gotUser db.User
+	err = json.Unmarshal(data, &gotUser)
+
+	require.NoError(t, err)
+	require.Equal(t, user.Username, gotUser.Username)
+	require.Equal(t, user.FullName, gotUser.FullName)
+	require.Equal(t, user.Email, gotUser.Email)
+	require.Empty(t, gotUser.HashedPassword)
 }
